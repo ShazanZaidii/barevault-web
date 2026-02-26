@@ -68,17 +68,25 @@
         </div>
     </div>
 
-    <div id="teamModal" class="absolute inset-0 z-[250] hidden flex-col items-center justify-center bg-black/80 backdrop-blur-sm transition-opacity">
-        <div class="w-full max-w-4xl bg-minio-panel rounded-lg shadow-2xl border border-minio-border overflow-hidden m-4">
+    <div id="teamModal"
+        class="absolute inset-0 z-[250] hidden flex-col items-center justify-center bg-black/80 backdrop-blur-sm transition-opacity">
+        <div
+            class="w-full max-w-4xl bg-minio-panel rounded-lg shadow-2xl border border-minio-border overflow-hidden m-4">
             <div class="p-4 border-b border-minio-border flex justify-between items-center bg-minio-sidebar shrink-0">
                 <h2 class="text-sm font-bold text-white flex items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 mr-2 text-indigo-400">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="w-5 h-5 mr-2 text-indigo-400">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
                     </svg>
                     Manage Team Access
                 </h2>
-                <button onclick="document.getElementById('teamModal').classList.add('hidden')" class="text-gray-400 hover:text-white transition-colors">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                <button onclick="document.getElementById('teamModal').classList.add('hidden')"
+                    class="text-gray-400 hover:text-white transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                        stroke="currentColor" class="w-5 h-5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
                 </button>
             </div>
             <div class="p-0 max-h-[60vh] overflow-y-auto">
@@ -92,7 +100,7 @@
                         </tr>
                     </thead>
                     <tbody id="employeeTableBody">
-                        </tbody>
+                    </tbody>
                 </table>
             </div>
         </div>
@@ -200,7 +208,8 @@
                     class="w-full text-left text-xs font-medium text-gray-400 hover:text-white flex items-center p-2 rounded hover:bg-minio-panel transition-colors hidden">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="w-4 h-4 mr-3">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
                     </svg>
                     Manage Team
                 </button>
@@ -264,8 +273,9 @@
                                             d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
                                     </svg>
                                 </button>
-                                
-                                <input type="file" id="fileUploadInput" class="hidden" multiple onchange="uploadFiles(event)">
+
+                                <input type="file" id="fileUploadInput" class="hidden" multiple
+                                    onchange="uploadFiles(event)">
                                 <button id="btnUpload" onclick="document.getElementById('fileUploadInput').click()"
                                     class="bg-white hover:bg-gray-200 text-gray-900 px-4 py-1.5 rounded text-xs font-bold transition-colors flex items-center shadow-sm">
                                     Upload
@@ -498,7 +508,7 @@
 
             if (inviteToken && gatewayURL) {
                 await redeemInvite(inviteToken, gatewayURL);
-                return; 
+                return;
             }
 
             const savedEndpoint = localStorage.getItem('bv_endpoint');
@@ -525,7 +535,7 @@
             const employeeName = prompt("Welcome! Please enter your name to join the workspace:");
             if (!employeeName) {
                 alert("Name is required to join.");
-                window.location.href = window.location.pathname; 
+                window.location.href = window.location.pathname;
                 return;
             }
 
@@ -550,17 +560,17 @@
                 const data = await res.json();
 
                 if (data.status === 'success') {
-                    localStorage.setItem('bv_endpoint', gatewayURL); 
+                    localStorage.setItem('bv_endpoint', gatewayURL);
                     localStorage.setItem('bv_access', data.access_key);
                     localStorage.setItem('bv_secret', data.secret_key);
 
                     alert(`Success! Welcome, ${employeeName}. You are securely logged in.`);
-                    window.location.href = window.location.pathname; 
+                    window.location.href = window.location.pathname;
                 }
 
             } catch (error) {
                 alert("Redemption Error: " + error.message);
-                window.location.href = window.location.pathname; 
+                window.location.href = window.location.pathname;
             }
         }
 
@@ -617,10 +627,10 @@
             if (isAdmin) {
                 document.getElementById('btnCreateBucket').classList.remove('hidden');
                 document.getElementById('btnCreateBucket').classList.add('flex');
-                
+
                 document.getElementById('btnGenerateInvite').classList.remove('hidden');
                 document.getElementById('btnGenerateInvite').classList.add('flex');
-                
+
                 document.getElementById('btnManageTeam').classList.remove('hidden');
                 document.getElementById('btnManageTeam').classList.add('flex');
 
@@ -985,7 +995,8 @@
 
                 const data = await res.json();
                 if (data.status === 'success') {
-                    const inviteUrl = window.location.origin + window.location.pathname + "?invite=" + data.invite_token + "&gateway=" + encodeURIComponent(rawEndpoint);
+
+                    const inviteUrl = window.location.href.split('?')[0] + "?invite=" + data.invite_token + "&gateway=" + encodeURIComponent(rawEndpoint);
                     await navigator.clipboard.writeText(inviteUrl);
                     updateToast(toastId, `✅ Invite copied! (Uses: ${maxUses}, Role: ${policy})`, true);
                 }
@@ -998,7 +1009,7 @@
         async function openTeamManager() {
             document.getElementById('teamModal').classList.remove('hidden');
             document.getElementById('teamModal').classList.add('flex');
-            
+
             const tbody = document.getElementById('employeeTableBody');
             tbody.innerHTML = `<tr><td colspan="4" class="text-center py-8 text-gray-500 animate-pulse">Loading team registry...</td></tr>`;
 
@@ -1013,8 +1024,8 @@
 
                 tbody.innerHTML = '';
                 for (const [key, emp] of Object.entries(employees)) {
-                    let roleColor = emp.role === 'admin' ? 'bg-red-900/50 text-red-400' : 
-                                    emp.role === 'readwrite' ? 'bg-green-900/50 text-green-400' : 'bg-blue-900/50 text-blue-400';
+                    let roleColor = emp.role === 'admin' ? 'bg-red-900/50 text-red-400' :
+                        emp.role === 'readwrite' ? 'bg-green-900/50 text-green-400' : 'bg-blue-900/50 text-blue-400';
 
                     tbody.innerHTML += `
                         <tr class="border-b border-gray-800 hover:bg-gray-800/50">
@@ -1041,16 +1052,16 @@
 
             const res = await fetch(adminEdgeLink + '/api/employees/revoke', {
                 method: 'POST',
-                headers: { 
+                headers: {
                     'Authorization': 'Bearer ' + localStorage.getItem('bv_secret'),
-                    'Content-Type': 'application/json' 
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({ access_key: accessKey })
             });
 
             if (res.ok) {
                 alert("User access revoked successfully.");
-                openTeamManager(); 
+                openTeamManager();
             } else {
                 alert("Failed to revoke user.");
             }
@@ -1061,12 +1072,12 @@
             if (!activeBucket) return;
             if (!confirm(`WARNING: Are you sure you want to permanently delete the bucket "${activeBucket}"?\n\nThe bucket MUST be completely empty first, or this will fail.`)) return;
 
-            s3.deleteBucket({ Bucket: activeBucket }, function(err, data) {
+            s3.deleteBucket({ Bucket: activeBucket }, function (err, data) {
                 if (err) {
                     alert("Delete Failed: " + err.message);
                 } else {
                     activeBucket = '';
-                    fetchBuckets(true); 
+                    fetchBuckets(true);
                     alert("Bucket deleted successfully.");
                 }
             });
@@ -1125,7 +1136,7 @@
 
             const filesToZip = Array.from(selectedFiles);
             const bucketSource = activeBucket;
-            
+
             // Uncheck files immediately so UI is free
             selectedFiles.clear();
             document.querySelectorAll('.file-checkbox').forEach(cb => cb.checked = false);
@@ -1191,7 +1202,7 @@
                 if (autoDismiss) {
                     setTimeout(() => {
                         toast.classList.add('opacity-0');
-                        setTimeout(() => toast.remove(), 300); 
+                        setTimeout(() => toast.remove(), 300);
                     }, 4000);
                 }
             }
