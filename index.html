@@ -529,6 +529,9 @@
 
         // 🔥 REDEEM INVITE FLOW
         async function redeemInvite(token, gatewayURL) {
+            // 🔥 Safety Fix: Ensure gatewayURL has a protocol
+            if (!gatewayURL.startsWith('http')) gatewayURL = 'https://' + gatewayURL;
+            
             document.getElementById('globalLoader').classList.remove('hidden');
             document.querySelector('#globalLoader p').innerText = "Connecting to Workspace...";
 
@@ -996,7 +999,10 @@
                 const data = await res.json();
                 if (data.status === 'success') {
 
-                    const inviteUrl = window.location.href.split('?')[0] + "?invite=" + data.invite_token + "&gateway=" + encodeURIComponent(rawEndpoint);
+                    // Replace the inviteUrl line with this:
+                const inviteUrl = window.location.href.split('?')[0] + 
+                                                                         "?invite=" + data.invite_token + 
+                                                                                                             "&gateway=" + encodeURIComponent(rawEndpoint);
                     await navigator.clipboard.writeText(inviteUrl);
                     updateToast(toastId, `✅ Invite copied! (Uses: ${maxUses}, Role: ${policy})`, true);
                 }
