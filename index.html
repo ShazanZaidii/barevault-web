@@ -565,9 +565,9 @@
                 return;
             }
 
-            const savedEndpoint = localStorage.getItem('bv_endpoint');
-            const savedAccess = localStorage.getItem('bv_access');
-            const savedSecret = localStorage.getItem('bv_secret');
+            const savedEndpoint = sessionStorage.getItem('bv_endpoint');
+            const savedAccess = sessionStorage.getItem('bv_access');
+            const savedSecret = sessionStorage.getItem('bv_secret');
 
             if (savedEndpoint && savedAccess && savedSecret) {
                 const activeEndpoint = await resolveEndpoint(savedEndpoint);
@@ -614,9 +614,9 @@
                 const data = await res.json();
 
                 if (data.status === 'success') {
-                    localStorage.setItem('bv_endpoint', gatewayURL);
-                    localStorage.setItem('bv_access', data.access_key);
-                    localStorage.setItem('bv_secret', data.secret_key);
+                    sessionStorage.setItem('bv_endpoint', gatewayURL);
+                    sessionStorage.setItem('bv_access', data.access_key);
+                    sessionStorage.setItem('bv_secret', data.secret_key);
 
                     alert(`Success! Welcome, ${employeeName}. You are securely logged in.`);
                     window.location.href = window.location.href.split('?')[0];
@@ -655,9 +655,9 @@
                 return;
             }
 
-            localStorage.setItem('bv_endpoint', rawEndpoint);
-            localStorage.setItem('bv_access', access);
-            localStorage.setItem('bv_secret', secret);
+            sessionStorage.setItem('bv_endpoint', rawEndpoint);
+            sessionStorage.setItem('bv_access', access);
+            sessionStorage.setItem('bv_secret', secret);
 
             document.getElementById('loginScreen').classList.add('hidden');
             document.getElementById('globalLoader').classList.remove('hidden');
@@ -1056,8 +1056,8 @@
             if (policyInput === "1") policy = "readonly";
             if (policyInput === "3") policy = "admin";
 
-            const rawEndpoint = localStorage.getItem('bv_endpoint');
-            const secretKey = localStorage.getItem('bv_secret');
+            const rawEndpoint = sessionStorage.getItem('bv_endpoint');
+            const secretKey = sessionStorage.getItem('bv_secret');
             const adminEndpoint = rawEndpoint.replace('-api', '-admin');
 
             const toastId = 'toast-invite-' + Date.now();
@@ -1099,12 +1099,12 @@
             const tbody = document.getElementById('employeeTableBody');
             tbody.innerHTML = `<tr><td colspan="4" class="text-center py-8 text-gray-500 animate-pulse">Loading team registry...</td></tr>`;
 
-            const adminEndpoint = localStorage.getItem('bv_endpoint').replace('-api', '-admin');
+            const adminEndpoint = sessionStorage.getItem('bv_endpoint').replace('-api', '-admin');
             const adminEdgeLink = await resolveEndpoint(adminEndpoint);
 
             try {
                 const res = await fetch(adminEdgeLink + '/api/employees/list', {
-                    headers: { 'Authorization': 'Bearer ' + localStorage.getItem('bv_secret') }
+                    headers: { 'Authorization': 'Bearer ' + sessionStorage.getItem('bv_secret') }
                 });
                 const employees = await res.json();
 
@@ -1132,13 +1132,13 @@
         async function revokeEmployee(accessKey) {
             if (!confirm("Permanently revoke this user's access? They will be locked out immediately.")) return;
 
-            const adminEndpoint = localStorage.getItem('bv_endpoint').replace('-api', '-admin');
+            const adminEndpoint = sessionStorage.getItem('bv_endpoint').replace('-api', '-admin');
             const adminEdgeLink = await resolveEndpoint(adminEndpoint);
 
             const res = await fetch(adminEdgeLink + '/api/employees/revoke', {
                 method: 'POST',
                 headers: {
-                    'Authorization': 'Bearer ' + localStorage.getItem('bv_secret'),
+                    'Authorization': 'Bearer ' + sessionStorage.getItem('bv_secret'),
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({ access_key: accessKey })
@@ -1354,7 +1354,7 @@
         }
 
         function logout() {
-            localStorage.clear();
+            sessionStorage.clear();
             window.location.href = window.location.href.split('?')[0];
         }
     </script>
