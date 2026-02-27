@@ -68,6 +68,31 @@
         </div>
     </div>
 
+    <div id="paywallAdminModal" class="absolute inset-0 z-[300] hidden flex-col items-center justify-center bg-minio-bg/95 backdrop-blur-sm transition-opacity">
+        <div class="bg-minio-panel border border-minio-border p-8 rounded-lg max-w-md w-full text-center shadow-2xl m-4">
+            <div class="w-16 h-16 bg-red-900/20 text-red-500 rounded-full flex items-center justify-center mx-auto mb-6">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" /></svg>
+            </div>
+            <h2 class="text-2xl font-black text-white tracking-wide mb-2">Trial Expired</h2>
+            <p class="text-sm text-gray-400 mb-8 leading-relaxed">Your 7-day trial has concluded. Upgrade to Premium to instantly restore team access and unlock unlimited storage.</p>
+            <a id="stripeCheckoutBtn" href="#" target="_blank" class="block w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3.5 rounded transition-colors shadow-lg mb-4">
+                Upgrade to Premium
+            </a>
+            <button onclick="logout()" class="text-xs text-gray-500 hover:text-white transition-colors uppercase tracking-widest font-bold">Sign Out</button>
+        </div>
+    </div>
+
+    <div id="paywallEmployeeModal" class="absolute inset-0 z-[300] hidden flex-col items-center justify-center bg-minio-bg/95 backdrop-blur-sm transition-opacity">
+        <div class="bg-minio-panel border border-minio-border p-8 rounded-lg max-w-md w-full text-center shadow-2xl m-4">
+             <div class="w-16 h-16 bg-gray-800 text-gray-400 rounded-full flex items-center justify-center mx-auto mb-6">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8"><path stroke-linecap="round" stroke-linejoin="round" d="M14.25 9v6m-4.5 0V9M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+            </div>
+            <h2 class="text-2xl font-black text-white tracking-wide mb-2">Workspace Suspended</h2>
+            <p class="text-sm text-gray-400 mb-8 leading-relaxed">The administrator's subscription for this workspace has expired. Please contact your team admin to restore access.</p>
+            <button onclick="logout()" class="block w-full bg-gray-800 hover:bg-gray-700 text-white font-bold py-3.5 rounded transition-colors shadow-lg">Sign Out</button>
+        </div>
+    </div>
+
     <div id="teamModal"
         class="absolute inset-0 z-[250] hidden flex-col items-center justify-center bg-black/80 backdrop-blur-sm transition-opacity">
         <div
@@ -273,9 +298,8 @@
                                             d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
                                     </svg>
                                 </button>
-
-                                <input type="file" id="fileUploadInput" class="hidden" multiple
-                                    onchange="uploadFiles(event)">
+                                
+                                <input type="file" id="fileUploadInput" class="hidden" multiple onchange="uploadFiles(event)">
                                 <button id="btnUpload" onclick="document.getElementById('fileUploadInput').click()"
                                     class="bg-white hover:bg-gray-200 text-gray-900 px-4 py-1.5 rounded text-xs font-bold transition-colors flex items-center shadow-sm">
                                     Upload
@@ -501,7 +525,6 @@
         }
 
         window.onload = async function () {
-            // 🔥 CHECK FOR INVITE LINK
             const urlParams = new URLSearchParams(window.location.search);
             const inviteToken = urlParams.get('invite');
             const gatewayURL = urlParams.get('gateway');
@@ -527,9 +550,7 @@
             document.getElementById('loginScreen').classList.remove('hidden');
         };
 
-        // 🔥 REDEEM INVITE FLOW
         async function redeemInvite(token, gatewayURL) {
-            // 🔥 Safety Fix: Ensure gatewayURL has a protocol
             if (!gatewayURL.startsWith('http')) gatewayURL = 'https://' + gatewayURL;
             
             document.getElementById('globalLoader').classList.remove('hidden');
@@ -538,7 +559,7 @@
             const employeeName = prompt("Welcome! Please enter your name to join the workspace:");
             if (!employeeName) {
                 alert("Name is required to join.");
-                window.location.href = window.location.pathname;
+                window.location.href = window.location.href.split('?')[0];
                 return;
             }
 
@@ -554,7 +575,6 @@
                     body: JSON.stringify({ token: token, name: employeeName })
                 });
 
-                // 🔥 TRUE ERROR REPORTING 
                 if (!res.ok) {
                     const errText = await res.text();
                     throw new Error(errText || "Unknown Backend Error");
@@ -568,12 +588,12 @@
                     localStorage.setItem('bv_secret', data.secret_key);
 
                     alert(`Success! Welcome, ${employeeName}. You are securely logged in.`);
-                    window.location.href = window.location.pathname;
+                    window.location.href = window.location.href.split('?')[0];
                 }
 
             } catch (error) {
                 alert("Redemption Error: " + error.message);
-                window.location.href = window.location.pathname;
+                window.location.href = window.location.href.split('?')[0];
             }
         }
 
@@ -582,7 +602,6 @@
             const access = document.getElementById('accessKey').value.trim();
             const secret = document.getElementById('secretKey').value.trim();
 
-            // 🔥 AUTO-HTTPS FIX
             if (rawEndpoint && !rawEndpoint.startsWith('http')) {
                 rawEndpoint = 'https://' + rawEndpoint;
                 document.getElementById('endpointUrl').value = rawEndpoint;
@@ -615,7 +634,40 @@
             initAWS(activeEndpoint, access, secret);
         }
 
-        function initAWS(endpoint, access, secret) {
+        async function initAWS(endpoint, access, secret) {
+            const isAdmin = access.startsWith('bv_admin_');
+
+            // 🔥 1. CHECK BILLING/LOCK STATUS FIRST
+            try {
+                const adminEndpoint = endpoint.replace('-api', '-admin');
+                const adminEdgeLink = await resolveEndpoint(adminEndpoint);
+                
+                const billRes = await fetch(adminEdgeLink + '/api/billing/status');
+                const billData = await billRes.json();
+                
+                if (billData.expired === true) {
+                    document.getElementById('globalLoader').classList.add('hidden');
+                    document.getElementById('loginScreen').classList.add('hidden');
+                    document.getElementById('dashboardScreen').classList.add('hidden');
+                    
+                    if (isAdmin) {
+                        document.getElementById('paywallAdminModal').classList.remove('hidden');
+                        document.getElementById('paywallAdminModal').classList.add('flex');
+                        
+                        // Dynamically attach hardware ID to checkout link
+                        const checkoutLink = `https://buy.stripe.com/test_YOUR_STRIPE_LINK?client_reference_id=${billData.machine_id}`;
+                        document.getElementById('stripeCheckoutBtn').href = checkoutLink;
+                    } else {
+                        document.getElementById('paywallEmployeeModal').classList.remove('hidden');
+                        document.getElementById('paywallEmployeeModal').classList.add('flex');
+                    }
+                    return; // 🛑 HALT EXECUTION. Do not connect to S3.
+                }
+            } catch(e) {
+                console.log("Billing check skipped or offline.", e);
+            }
+
+            // 2. If active, proceed normally
             AWS.config.update({
                 accessKeyId: access,
                 secretAccessKey: secret,
@@ -625,18 +677,13 @@
             });
             s3 = new AWS.S3();
 
-            // 🔥 ROLE-BASED UI LOGIC
-            const isAdmin = access.startsWith('bv_admin_');
             if (isAdmin) {
                 document.getElementById('btnCreateBucket').classList.remove('hidden');
                 document.getElementById('btnCreateBucket').classList.add('flex');
-
                 document.getElementById('btnGenerateInvite').classList.remove('hidden');
                 document.getElementById('btnGenerateInvite').classList.add('flex');
-
                 document.getElementById('btnManageTeam').classList.remove('hidden');
                 document.getElementById('btnManageTeam').classList.add('flex');
-
                 document.getElementById('btnDeleteBucket').classList.remove('hidden');
                 document.getElementById('btnDeleteBucket').classList.add('flex');
             } else {
@@ -999,10 +1046,9 @@
                 const data = await res.json();
                 if (data.status === 'success') {
 
-                    // Replace the inviteUrl line with this:
-                const inviteUrl = window.location.href.split('?')[0] + 
-                                                                         "?invite=" + data.invite_token + 
-                                                                                                             "&gateway=" + encodeURIComponent(rawEndpoint);
+                    const inviteUrl = window.location.href.split('?')[0] + 
+                                     "?invite=" + data.invite_token + 
+                                     "&gateway=" + encodeURIComponent(rawEndpoint);
                     await navigator.clipboard.writeText(inviteUrl);
                     updateToast(toastId, `✅ Invite copied! (Uses: ${maxUses}, Role: ${policy})`, true);
                 }
@@ -1279,7 +1325,8 @@
 
         function logout() {
             localStorage.clear();
-            location.reload();
+            // Force clear the query params on logout so it doesn't try to re-redeem an old invite
+            window.location.href = window.location.href.split('?')[0];
         }
     </script>
 </body>
