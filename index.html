@@ -656,11 +656,25 @@
                 const billData = await billRes.json();
                 
                 if (billData.expired === true) {
-                    // ... (Keep the existing paywall popup logic here)
-                    return; 
+                    document.getElementById('globalLoader').classList.add('hidden');
+                    document.getElementById('loginScreen').classList.add('hidden');
+                    document.getElementById('dashboardScreen').classList.add('hidden');
+                    
+                    if (isAdmin) {
+                        document.getElementById('paywallAdminModal').classList.remove('hidden');
+                        document.getElementById('paywallAdminModal').classList.add('flex');
+                        
+                        // Dynamically attach hardware ID to checkout link
+                        const checkoutLink = `https://buy.stripe.com/test_YOUR_STRIPE_LINK?client_reference_id=${billData.machine_id}`;
+                        document.getElementById('stripeCheckoutBtn').href = checkoutLink;
+                    } else {
+                        document.getElementById('paywallEmployeeModal').classList.remove('hidden');
+                        document.getElementById('paywallEmployeeModal').classList.add('flex');
+                    }
+                    return; // 🛑 HALT EXECUTION. Do not connect to S3.
                 }
 
-                // 🔥 NEW: Show persistent upgrade button if they are an Admin on Trial
+                // Show persistent upgrade button if they are an Admin on Trial
                 if (isAdmin && !billData.is_paid) {
                     const btn = document.getElementById('btnSidebarUpgrade');
                     btn.classList.remove('hidden');
@@ -837,8 +851,6 @@
             });
         }
 
-
-
         function toggleFileSelection(key, isChecked) {
             if (isChecked) selectedFiles.add(key);
             else selectedFiles.delete(key);
@@ -891,7 +903,6 @@
                 closeDrawer();
             }
         }
-
 
         function handleRowClick(event, element) {
             if (event && event.target.tagName.toLowerCase() === 'input') return;
@@ -953,7 +964,6 @@
             openDrawer(key, size, date, etag, contentType);
         }
 
-        // 🔥 ASYNC NON-BLOCKING FILE UPLOAD
         async function uploadFiles(event) {
             if (!activeBucket) {
                 alert("Please select a bucket first!");
@@ -1008,7 +1018,6 @@
             document.getElementById('objectDetailsDrawer').classList.add('hidden');
         }
 
-        // 🔥 TEAM MANAGEMENT: GENERATE GRANULAR INVITE
         async function generateInvite() {
             const limitInput = prompt("Enter the maximum number of uses for this link (e.g. 5):", "5");
             if (!limitInput) return;
@@ -1061,7 +1070,6 @@
             }
         }
 
-        // 🔥 TEAM MANAGEMENT: OPEN MODAL AND LIST TEAM
         async function openTeamManager() {
             document.getElementById('teamModal').classList.remove('hidden');
             document.getElementById('teamModal').classList.add('flex');
@@ -1099,7 +1107,6 @@
             }
         }
 
-        // 🔥 TEAM MANAGEMENT: PERMANENTLY KICK EMPLOYEE
         async function revokeEmployee(accessKey) {
             if (!confirm("Permanently revoke this user's access? They will be locked out immediately.")) return;
 
@@ -1123,7 +1130,6 @@
             }
         }
 
-        // 🔥 DELETE CURRENT BUCKET (ADMIN ONLY)
         function deleteCurrentBucket() {
             if (!activeBucket) return;
             if (!confirm(`WARNING: Are you sure you want to permanently delete the bucket "${activeBucket}"?\n\nThe bucket MUST be completely empty first, or this will fail.`)) return;
@@ -1186,14 +1192,12 @@
             document.getElementById('previewImage').src = '';
         }
 
-        // 🔥 ASYNC BACKGROUND BATCH ZIP
         async function downloadBulk() {
             if (selectedFiles.size === 0) return;
 
             const filesToZip = Array.from(selectedFiles);
             const bucketSource = activeBucket;
 
-            // Uncheck files immediately so UI is free
             selectedFiles.clear();
             document.querySelectorAll('.file-checkbox').forEach(cb => cb.checked = false);
             document.getElementById('selectAllCheckbox').checked = false;
@@ -1286,7 +1290,7 @@
             const url = s3.getSignedUrl('getObject', {
                 Bucket: activeBucket,
                 Key: selectedObjectKey,
-                Expires: 604800 // 7 days in seconds
+                Expires: 604800 
             });
 
             navigator.clipboard.writeText(url).then(() => {
@@ -1329,7 +1333,6 @@
 
         function logout() {
             localStorage.clear();
-            // Force clear the query params on logout so it doesn't try to re-redeem an old invite
             window.location.href = window.location.href.split('?')[0];
         }
     </script>
