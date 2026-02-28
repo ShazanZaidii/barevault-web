@@ -351,13 +351,8 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
                                 </svg>
                             </h3>
-                            <div class="space-y-4 text-xs">
-                                <div><span class="block text-gray-400 mb-1 font-medium">Name:</span><span class="text-gray-200 break-all" id="drawerName">...</span></div>
-                                <div><span class="block text-gray-400 mb-1 font-medium">Size:</span><span class="text-gray-200" id="drawerSize">...</span></div>
-                                <div><span class="block text-gray-400 mb-1 font-medium">Last Modified:</span><span class="text-gray-200" id="drawerDate">...</span></div>
-                                <div><span class="block text-gray-400 mb-1 font-medium">ETAG:</span><span class="text-gray-400 break-all font-mono text-[10px]" id="drawerEtag">...</span></div>
-                                <div><span class="block text-gray-400 mb-1 font-medium text-[10px] uppercase mt-4">Content-Type</span><span class="text-gray-200 break-all" id="drawerContentType">...</span></div>
-                            </div>
+                            <div class="space-y-4 text-xs" id="objectInfoFields">
+                                </div>
                         </div>
                     </div>
                 </div>
@@ -925,8 +920,8 @@
                 document.getElementById('objectInfoFields').innerHTML = '';
             } else if (selectedFiles.size === 1) {
                 const key = Array.from(selectedFiles)[0];
-                const row = document.querySelector(`[data-key="${key}"]`);
-                handleRowClick(null, row);
+                const row = Array.from(document.querySelectorAll('.object-row')).find(r => r.getAttribute('data-key') === key);
+                if (row) handleRowClick(null, row);
             } else {
                 closeDrawer();
             }
@@ -939,6 +934,9 @@
             const size = element.getAttribute('data-size');
             const date = element.getAttribute('data-date');
             const etag = element.getAttribute('data-etag');
+
+            // Set global state properly so Preview and Download actions work
+            selectedObjectKey = key;
 
             document.querySelectorAll('.file-checkbox').forEach(cb => cb.checked = false);
             const cb = element.querySelector('.file-checkbox');
