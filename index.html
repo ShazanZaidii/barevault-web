@@ -485,7 +485,6 @@
             }
         }
 
-        // 🔒 Secure Token Hashing for Admin API
         async function getAuthToken() {
             const secret = sessionStorage.getItem('bv_secret');
             if (!secret) return "";
