@@ -36,6 +36,60 @@
         <p class="text-sm text-gray-400 font-medium animate-pulse">Establishing secure connection...</p>
     </div>
 
+    <div id="createBucketModal" class="absolute inset-0 z-[300] hidden flex-col items-center justify-center bg-black/80 backdrop-blur-sm transition-opacity">
+        <div class="bg-minio-panel border border-minio-border p-6 rounded-lg max-w-md w-full shadow-2xl m-4">
+            <h2 class="text-xl font-bold text-white mb-4">Create New Bucket</h2>
+            <div class="mb-5">
+                <label class="block text-xs font-bold text-gray-400 uppercase tracking-wide mb-2">Bucket Name</label>
+                <input type="text" id="newBucketName" oninput="validateBucketName()" class="w-full bg-transparent border border-minio-border rounded p-3 text-sm text-white focus:border-minio-accent focus:outline-none transition-colors" placeholder="e.g. my-app-data">
+                <p id="bucketValidationMsg" class="text-xs text-gray-500 mt-2">Must be 3-63 characters, lowercase, numbers, or hyphens.</p>
+            </div>
+            <div class="flex justify-end space-x-3">
+                <button onclick="closeCreateBucketModal()" class="px-4 py-2 rounded text-sm font-medium text-gray-400 hover:text-white transition-colors">Cancel</button>
+                <button id="confirmCreateBucketBtn" onclick="submitCreateBucket()" disabled class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 disabled:bg-gray-700 disabled:text-gray-500 disabled:cursor-not-allowed text-white rounded text-sm font-bold transition-colors shadow-lg">Create</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="inviteModal" class="absolute inset-0 z-[300] hidden flex-col items-center justify-center bg-black/80 backdrop-blur-sm transition-opacity">
+        <div class="bg-minio-panel border border-minio-border p-6 rounded-lg max-w-lg w-full shadow-2xl m-4 flex flex-col max-h-[90vh]">
+            <h2 class="text-xl font-bold text-white mb-5 shrink-0">Generate Team Invite</h2>
+            
+            <div class="overflow-y-auto flex-1 pr-2 space-y-5">
+                <div>
+                    <label class="block text-xs font-bold text-gray-400 uppercase tracking-wide mb-2">Max Uses</label>
+                    <input type="number" id="inviteMaxUses" value="5" min="1" class="w-full bg-transparent border border-minio-border rounded p-3 text-sm text-white focus:border-gray-500 focus:outline-none transition-colors">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-gray-400 uppercase tracking-wide mb-2">Permission Level</label>
+                    <select id="invitePolicy" class="w-full bg-minio-bg border border-minio-border rounded p-3 text-sm text-white focus:border-gray-500 focus:outline-none transition-colors">
+                        <option value="readonly">Read Only (View & Download)</option>
+                        <option value="readwrite" selected>Read & Write (Standard)</option>
+                        <option value="admin">Admin (Full Control)</option>
+                    </select>
+                </div>
+
+                <div>
+                    <div class="flex justify-between items-center mb-2">
+                        <label class="block text-xs font-bold text-gray-400 uppercase tracking-wide">Bucket Access</label>
+                        <label class="flex items-center text-xs text-indigo-400 cursor-pointer hover:text-indigo-300 font-bold">
+                            <input type="checkbox" id="selectAllBuckets" onchange="toggleAllInviteBuckets(this)" class="mr-1.5 rounded border-gray-600 bg-transparent cursor-pointer">
+                            Select All
+                        </label>
+                    </div>
+                    <div id="inviteBucketList" class="bg-minio-bg border border-minio-border rounded-md p-3 max-h-40 overflow-y-auto space-y-2">
+                        </div>
+                </div>
+            </div>
+
+            <div class="flex justify-end space-x-3 mt-6 shrink-0 pt-2 border-t border-gray-800">
+                <button onclick="closeInviteModal()" class="px-4 py-2 rounded text-sm font-medium text-gray-400 hover:text-white transition-colors">Cancel</button>
+                <button onclick="submitGenerateInvite()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded text-sm font-bold transition-colors shadow-lg">Copy Link</button>
+            </div>
+        </div>
+    </div>
+
     <div id="previewModal"
         class="absolute inset-0 z-[200] hidden flex-col items-center justify-center bg-black/80 backdrop-blur-sm transition-opacity">
         <div
@@ -173,7 +227,7 @@
                 </div>
 
                 <div class="p-4 flex-1 flex flex-col overflow-hidden">
-                    <button id="btnCreateBucket" onclick="createBucket()"
+                    <button id="btnCreateBucket" onclick="openCreateBucketModal()"
                         class="w-full bg-minio-panel border border-minio-border hover:bg-gray-800 text-white font-medium py-2 px-4 rounded flex items-center justify-center mb-2 text-sm transition-colors hidden">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
                             stroke="currentColor" class="w-4 h-4 mr-2">
@@ -182,7 +236,7 @@
                         Create Bucket
                     </button>
 
-                    <button id="btnGenerateInvite" onclick="generateInvite()"
+                    <button id="btnGenerateInvite" onclick="openInviteModal()"
                         class="w-full bg-transparent border border-minio-border hover:bg-gray-800 text-gray-300 font-medium py-2 px-4 rounded flex items-center justify-center mb-6 text-sm transition-colors hidden">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                             stroke="currentColor" class="w-4 h-4 mr-2">
@@ -485,7 +539,7 @@
         }
 
         async function resolveEndpoint(url) {
-            if (!url.includes("barevault-gateway")) return url;
+            if (!url.includes(".workers.dev")) return url;
             try {
                 const resolveUrl = new URL(url);
                 resolveUrl.searchParams.append("resolve", "true");
@@ -701,17 +755,162 @@
             });
         }
 
-        function createBucket() {
-            const bucketName = prompt("Enter a new bucket name (lowercase, no spaces, globally unique):");
+        // ==========================================
+        // CREATE BUCKET LOGIC (Replaced Prompts)
+        // ==========================================
+        function openCreateBucketModal() {
+            document.getElementById('newBucketName').value = '';
+            document.getElementById('bucketValidationMsg').innerText = 'Must be 3-63 characters, lowercase, numbers, or hyphens.';
+            document.getElementById('bucketValidationMsg').className = 'text-xs text-gray-500 mt-2';
+            document.getElementById('confirmCreateBucketBtn').disabled = true;
+            document.getElementById('createBucketModal').classList.remove('hidden');
+            document.getElementById('createBucketModal').classList.add('flex');
+            setTimeout(() => document.getElementById('newBucketName').focus(), 100);
+        }
+
+        function closeCreateBucketModal() {
+            document.getElementById('createBucketModal').classList.add('hidden');
+            document.getElementById('createBucketModal').classList.remove('flex');
+        }
+
+        function validateBucketName() {
+            const input = document.getElementById('newBucketName').value;
+            const btn = document.getElementById('confirmCreateBucketBtn');
+            const msg = document.getElementById('bucketValidationMsg');
+            
+            // AWS S3 Strict Bucket Rules: lowercase, numbers, hyphens, no consecutive dots.
+            const isValid = /^[a-z0-9][a-z0-9.-]{1,61}[a-z0-9]$/.test(input) && !input.includes('..');
+            
+            if (input.length === 0) {
+                msg.innerText = "Must be 3-63 characters, lowercase, numbers, or hyphens.";
+                msg.className = "text-xs text-gray-500 mt-2";
+                btn.disabled = true;
+            } else if (!isValid) {
+                msg.innerText = "Invalid format. Use lowercase, numbers, and hyphens only.";
+                msg.className = "text-xs text-red-400 mt-2";
+                btn.disabled = true;
+            } else {
+                msg.innerText = "Bucket name looks good!";
+                msg.className = "text-xs text-green-400 mt-2";
+                btn.disabled = false;
+            }
+        }
+
+        function submitCreateBucket() {
+            const bucketName = document.getElementById('newBucketName').value.trim();
             if (!bucketName) return;
 
-            s3.createBucket({ Bucket: bucketName.trim() }, function (err, data) {
-                if (err) alert("Failed to create bucket: \n" + err.message);
-                else {
-                    activeBucket = bucketName.trim();
+            document.getElementById('confirmCreateBucketBtn').disabled = true;
+            document.getElementById('confirmCreateBucketBtn').innerText = "Creating...";
+
+            s3.createBucket({ Bucket: bucketName }, function (err, data) {
+                document.getElementById('confirmCreateBucketBtn').innerText = "Create";
+                if (err) {
+                    alert("Failed to create bucket: \n" + err.message);
+                    document.getElementById('confirmCreateBucketBtn').disabled = false;
+                } else {
+                    activeBucket = bucketName;
+                    closeCreateBucketModal();
                     fetchBuckets();
                 }
             });
+        }
+
+        // ==========================================
+        // INVITE MODAL LOGIC (Replaced Prompts)
+        // ==========================================
+        function openInviteModal() {
+            const listEl = document.getElementById('inviteBucketList');
+            listEl.innerHTML = '';
+            
+            const bucketItems = document.querySelectorAll('.bucket-item');
+            if(bucketItems.length === 0) {
+                listEl.innerHTML = '<p class="text-xs text-gray-500 text-center py-2">No buckets available.</p>';
+            } else {
+                bucketItems.forEach(item => {
+                    const bName = item.getAttribute('data-bucket');
+                    // Pre-select the currently active bucket
+                    const isChecked = (bName === activeBucket) ? 'checked' : '';
+                    listEl.innerHTML += `
+                        <label class="flex items-center text-sm text-gray-300 hover:text-white cursor-pointer p-1.5 rounded hover:bg-gray-800 transition-colors">
+                            <input type="checkbox" value="${bName}" class="invite-bucket-cb mr-3 rounded border-gray-600 bg-transparent cursor-pointer" ${isChecked}>
+                            ${bName}
+                        </label>
+                    `;
+                });
+            }
+            
+            // Reset Defaults
+            document.getElementById('inviteMaxUses').value = 5;
+            document.getElementById('invitePolicy').value = 'readwrite';
+            document.getElementById('selectAllBuckets').checked = false;
+            
+            document.getElementById('inviteModal').classList.remove('hidden');
+            document.getElementById('inviteModal').classList.add('flex');
+        }
+
+        function closeInviteModal() {
+            document.getElementById('inviteModal').classList.add('hidden');
+            document.getElementById('inviteModal').classList.remove('flex');
+        }
+
+        function toggleAllInviteBuckets(mainCheckbox) {
+            const isChecked = mainCheckbox.checked;
+            document.querySelectorAll('.invite-bucket-cb').forEach(cb => {
+                cb.checked = isChecked;
+            });
+        }
+
+        async function submitGenerateInvite() {
+            const maxUses = parseInt(document.getElementById('inviteMaxUses').value);
+            const policy = document.getElementById('invitePolicy').value;
+            const selectedBuckets = Array.from(document.querySelectorAll('.invite-bucket-cb:checked')).map(cb => cb.value);
+            
+            if (isNaN(maxUses) || maxUses <= 0) {
+                alert("Please enter a valid number for Max Uses.");
+                return;
+            }
+            
+            if (selectedBuckets.length === 0 && policy !== 'admin') {
+                alert("Please select at least one bucket for the user to access.");
+                return;
+            }
+
+            const rawEndpoint = localStorage.getItem('bv_endpoint');
+            const secretKey = localStorage.getItem('bv_secret');
+            const adminEndpoint = rawEndpoint.replace('-api', '-admin');
+
+            const toastId = 'toast-invite-' + Date.now();
+            showToast(toastId, `Generating secure team invite...`);
+            closeInviteModal();
+
+            try {
+                const adminEdgeLink = await resolveEndpoint(adminEndpoint);
+                if (!adminEdgeLink) throw new Error("Could not connect to local Admin Engine.");
+
+                const res = await fetch(adminEdgeLink + '/api/invite/create', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'Bearer ' + secretKey,
+                        'Content-Type': 'application/json'
+                    },
+                    // We now pass the buckets array to the Go backend
+                    body: JSON.stringify({ max_uses: maxUses, policy: policy, buckets: selectedBuckets })
+                });
+
+                if (!res.ok) throw new Error("Unauthorized. Only the server admin can create invites.");
+
+                const data = await res.json();
+                if (data.status === 'success') {
+                    const inviteUrl = window.location.href.split('?')[0] + 
+                                     "?invite=" + data.invite_token + 
+                                     "&gateway=" + encodeURIComponent(rawEndpoint);
+                    await navigator.clipboard.writeText(inviteUrl);
+                    updateToast(toastId, `✅ Invite copied! (Uses: ${maxUses}, Role: ${policy})`, true);
+                }
+            } catch (error) {
+                updateToast(toastId, `❌ Failed to create invite: ${error.message}`, true);
+            }
         }
 
         function refreshCurrentBucket() {
@@ -942,58 +1141,6 @@
         function closeDrawer() {
             selectedObjectKey = '';
             document.getElementById('objectDetailsDrawer').classList.add('hidden');
-        }
-
-        async function generateInvite() {
-            const limitInput = prompt("Enter the maximum number of uses for this link (e.g. 5):", "5");
-            if (!limitInput) return;
-            const maxUses = parseInt(limitInput);
-            if (isNaN(maxUses) || maxUses <= 0) {
-                alert("Please enter a valid number.");
-                return;
-            }
-
-            const policyInput = prompt("Enter permission level:\n1 = Read Only (Cannot upload/delete)\n2 = Read/Write (Standard)\n3 = Admin (Full Control)", "2");
-            if (!policyInput) return;
-
-            let policy = "readwrite";
-            if (policyInput === "1") policy = "readonly";
-            if (policyInput === "3") policy = "admin";
-
-            const rawEndpoint = localStorage.getItem('bv_endpoint');
-            const secretKey = localStorage.getItem('bv_secret');
-            const adminEndpoint = rawEndpoint.replace('-api', '-admin');
-
-            const toastId = 'toast-invite-' + Date.now();
-            showToast(toastId, `Generating secure team invite...`);
-
-            try {
-                const adminEdgeLink = await resolveEndpoint(adminEndpoint);
-                if (!adminEdgeLink) throw new Error("Could not connect to local Admin Engine.");
-
-                const res = await fetch(adminEdgeLink + '/api/invite/create', {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': 'Bearer ' + secretKey,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ max_uses: maxUses, policy: policy })
-                });
-
-                if (!res.ok) throw new Error("Unauthorized. Only the server admin can create invites.");
-
-                const data = await res.json();
-                if (data.status === 'success') {
-
-                    const inviteUrl = window.location.href.split('?')[0] + 
-                                     "?invite=" + data.invite_token + 
-                                     "&gateway=" + encodeURIComponent(rawEndpoint);
-                    await navigator.clipboard.writeText(inviteUrl);
-                    updateToast(toastId, `✅ Invite copied! (Uses: ${maxUses}, Role: ${policy})`, true);
-                }
-            } catch (error) {
-                updateToast(toastId, `❌ Failed to create invite: ${error.message}`, true);
-            }
         }
 
         async function openTeamManager() {
