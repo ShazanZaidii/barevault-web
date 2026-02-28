@@ -68,31 +68,6 @@
         </div>
     </div>
 
-    <div id="paywallAdminModal" class="absolute inset-0 z-[300] hidden flex-col items-center justify-center bg-minio-bg/95 backdrop-blur-sm transition-opacity">
-        <div class="bg-minio-panel border border-minio-border p-8 rounded-lg max-w-md w-full text-center shadow-2xl m-4">
-            <div class="w-16 h-16 bg-red-900/20 text-red-500 rounded-full flex items-center justify-center mx-auto mb-6">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" /></svg>
-            </div>
-            <h2 class="text-2xl font-black text-white tracking-wide mb-2">Trial Expired</h2>
-            <p class="text-sm text-gray-400 mb-8 leading-relaxed">Your 7-day trial has concluded. Upgrade to Premium to instantly restore team access and unlock unlimited storage.</p>
-            <a id="stripeCheckoutBtn" href="#" target="_blank" class="block w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3.5 rounded transition-colors shadow-lg mb-4">
-                Upgrade to Premium
-            </a>
-            <button onclick="logout()" class="text-xs text-gray-500 hover:text-white transition-colors uppercase tracking-widest font-bold">Sign Out</button>
-        </div>
-    </div>
-
-    <div id="paywallEmployeeModal" class="absolute inset-0 z-[300] hidden flex-col items-center justify-center bg-minio-bg/95 backdrop-blur-sm transition-opacity">
-        <div class="bg-minio-panel border border-minio-border p-8 rounded-lg max-w-md w-full text-center shadow-2xl m-4">
-             <div class="w-16 h-16 bg-gray-800 text-gray-400 rounded-full flex items-center justify-center mx-auto mb-6">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8"><path stroke-linecap="round" stroke-linejoin="round" d="M14.25 9v6m-4.5 0V9M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-            </div>
-            <h2 class="text-2xl font-black text-white tracking-wide mb-2">Workspace Suspended</h2>
-            <p class="text-sm text-gray-400 mb-8 leading-relaxed">The administrator's subscription for this workspace has expired. Please contact your team admin to restore access.</p>
-            <button onclick="logout()" class="block w-full bg-gray-800 hover:bg-gray-700 text-white font-bold py-3.5 rounded transition-colors shadow-lg">Sign Out</button>
-        </div>
-    </div>
-
     <div id="teamModal"
         class="absolute inset-0 z-[250] hidden flex-col items-center justify-center bg-black/80 backdrop-blur-sm transition-opacity">
         <div
@@ -229,16 +204,6 @@
             </div>
 
             <div class="p-4 border-t border-minio-border space-y-2 shrink-0 pb-8 overflow-y-auto">
-                <a id="btnSidebarUpgrade" href="#" target="_blank"
-                    class="w-full text-left text-xs font-bold text-indigo-400 hover:text-indigo-300 flex items-center p-2 rounded hover:bg-minio-panel transition-colors hidden mb-2 border border-indigo-900/30 bg-indigo-900/10">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
-                        stroke="currentColor" class="w-4 h-4 mr-3">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
-                    </svg>
-                    Upgrade to Premium
-                </a>
-                
                 <button id="btnManageTeam" onclick="openTeamManager()"
                     class="w-full text-left text-xs font-medium text-gray-400 hover:text-white flex items-center p-2 rounded hover:bg-minio-panel transition-colors hidden">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -644,48 +609,9 @@
             initAWS(activeEndpoint, access, secret);
         }
 
-        async function initAWS(endpoint, access, secret) {
+        function initAWS(endpoint, access, secret) {
             const isAdmin = access.startsWith('bv_admin_');
 
-            // 🔥 1. CHECK BILLING/LOCK STATUS FIRST
-            try {
-                const adminEndpoint = endpoint.replace('-api', '-admin');
-                const adminEdgeLink = await resolveEndpoint(adminEndpoint);
-                
-                const billRes = await fetch(adminEdgeLink + '/api/billing/status');
-                const billData = await billRes.json();
-                
-                if (billData.expired === true) {
-                    document.getElementById('globalLoader').classList.add('hidden');
-                    document.getElementById('loginScreen').classList.add('hidden');
-                    document.getElementById('dashboardScreen').classList.add('hidden');
-                    
-                    if (isAdmin) {
-                        document.getElementById('paywallAdminModal').classList.remove('hidden');
-                        document.getElementById('paywallAdminModal').classList.add('flex');
-                        
-                        // Dynamically attach hardware ID to checkout link
-                        const checkoutLink = `https://buy.stripe.com/test_YOUR_STRIPE_LINK?client_reference_id=${billData.machine_id}`;
-                        document.getElementById('stripeCheckoutBtn').href = checkoutLink;
-                    } else {
-                        document.getElementById('paywallEmployeeModal').classList.remove('hidden');
-                        document.getElementById('paywallEmployeeModal').classList.add('flex');
-                    }
-                    return; // 🛑 HALT EXECUTION. Do not connect to S3.
-                }
-
-                // Show persistent upgrade button if they are an Admin on Trial
-                if (isAdmin && !billData.is_paid) {
-                    const btn = document.getElementById('btnSidebarUpgrade');
-                    btn.classList.remove('hidden');
-                    btn.classList.add('flex');
-                    btn.href = `https://buy.stripe.com/test_YOUR_STRIPE_LINK?client_reference_id=${billData.machine_id}`;
-                }
-            } catch(e) {
-                console.log("Billing check skipped or offline.", e);
-            }
-
-            // 2. If active, proceed normally
             AWS.config.update({
                 accessKeyId: access,
                 secretAccessKey: secret,
