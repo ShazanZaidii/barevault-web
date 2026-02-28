@@ -41,7 +41,7 @@
             <h2 class="text-xl font-bold text-white mb-4">Create New Bucket</h2>
             <div class="mb-5">
                 <label class="block text-xs font-bold text-gray-400 uppercase tracking-wide mb-2">Bucket Name</label>
-                <input type="text" id="newBucketName" oninput="validateBucketName()" class="w-full bg-minio-bg border border-minio-border rounded-md p-3 text-sm text-white focus:border-indigo-500 focus:outline-none transition-colors shadow-sm" placeholder="e.g. my-app-data">
+                <input type="text" id="newBucketName" oninput="validateBucketName()" class="w-full bg-minio-bg border border-minio-border rounded p-3 text-sm text-white focus:border-indigo-500 focus:outline-none transition-colors" placeholder="e.g. my-app-data">
                 <p id="bucketValidationMsg" class="text-xs text-gray-500 mt-2 flex items-start"></p>
             </div>
             <div class="flex justify-end space-x-3 mt-6 pt-4 border-t border-gray-800">
@@ -58,12 +58,12 @@
             <div class="overflow-y-auto flex-1 pr-2 space-y-6">
                 <div>
                     <label class="block text-xs font-bold text-gray-400 uppercase tracking-wide mb-2">Max Uses</label>
-                    <div class="flex items-center bg-minio-bg border border-minio-border rounded-md overflow-hidden focus-within:border-indigo-500 transition-colors shadow-sm">
-                        <button onclick="document.getElementById('inviteMaxUses').stepDown()" class="px-4 py-3 text-gray-400 hover:text-white hover:bg-gray-800 transition-colors flex items-center justify-center border-r border-minio-border">
+                    <div class="flex items-center bg-transparent border border-minio-border rounded overflow-hidden focus-within:border-gray-500 transition-colors">
+                        <button onclick="document.getElementById('inviteMaxUses').stepDown()" class="px-4 py-3 text-gray-400 hover:text-white hover:bg-gray-800 transition-colors border-r border-minio-border">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4" /></svg>
                         </button>
-                        <input type="number" id="inviteMaxUses" value="5" min="1" class="flex-1 w-full bg-transparent py-2.5 px-3 text-sm text-center text-white focus:outline-none appearance-none m-0 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none">
-                        <button onclick="document.getElementById('inviteMaxUses').stepUp()" class="px-4 py-3 text-gray-400 hover:text-white hover:bg-gray-800 transition-colors flex items-center justify-center border-l border-minio-border">
+                        <input type="number" id="inviteMaxUses" value="5" min="1" class="flex-1 w-full bg-transparent p-3 text-sm text-center text-white focus:outline-none appearance-none m-0 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none">
+                        <button onclick="document.getElementById('inviteMaxUses').stepUp()" class="px-4 py-3 text-gray-400 hover:text-white hover:bg-gray-800 transition-colors border-l border-minio-border">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
                         </button>
                     </div>
@@ -72,9 +72,9 @@
                 <div>
                     <label class="block text-xs font-bold text-gray-400 uppercase tracking-wide mb-2">Permission Level</label>
                     <div class="relative">
-                        <select id="invitePolicy" class="appearance-none w-full bg-minio-bg border border-minio-border rounded-md py-3 pl-3 pr-10 text-sm text-white focus:border-indigo-500 focus:outline-none transition-colors cursor-pointer shadow-sm">
-                            <option value="readonly" class="bg-minio-panel text-white" selected>Read Only (View & Download)</option>
-                            <option value="readwrite" class="bg-minio-panel text-white">Read & Write (Standard)</option>
+                        <select id="invitePolicy" class="appearance-none w-full bg-transparent border border-minio-border rounded py-3 pl-3 pr-10 text-sm text-white focus:border-indigo-500 focus:outline-none transition-colors cursor-pointer">
+                            <option value="readonly" class="bg-minio-panel text-white">Read Only (View & Download)</option>
+                            <option value="readwrite" selected class="bg-minio-panel text-white">Read & Write (Standard)</option>
                             <option value="admin" class="bg-minio-panel text-white">Admin (Full Control)</option>
                         </select>
                         <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400">
@@ -93,7 +93,7 @@
                             Select All
                         </label>
                     </div>
-                    <div id="inviteBucketList" class="bg-minio-bg border border-minio-border rounded-md p-2 max-h-48 overflow-y-auto space-y-1 shadow-inner">
+                    <div id="inviteBucketList" class="bg-minio-bg border border-minio-border rounded-md p-2 max-h-48 overflow-y-auto space-y-1">
                         </div>
                 </div>
             </div>
@@ -213,7 +213,7 @@
 
                 <div class="p-4 flex-1 flex flex-col overflow-hidden">
                     <button id="btnCreateBucket" onclick="openCreateBucketModal()"
-                        class="w-full bg-minio-panel border border-minio-border hover:bg-gray-800 text-white font-medium py-2 px-4 rounded flex items-center justify-center mb-2 text-sm transition-colors">
+                        class="w-full bg-minio-panel border border-minio-border hover:bg-gray-800 text-white font-medium py-2 px-4 rounded flex items-center justify-center mb-2 text-sm transition-colors hidden">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 mr-2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                         </svg>
@@ -221,7 +221,7 @@
                     </button>
 
                     <button id="btnGenerateInvite" onclick="openInviteModal()"
-                        class="w-full bg-transparent border border-minio-border hover:bg-gray-800 text-gray-300 font-medium py-2 px-4 rounded flex items-center justify-center mb-6 text-sm transition-colors">
+                        class="w-full bg-transparent border border-minio-border hover:bg-gray-800 text-gray-300 font-medium py-2 px-4 rounded flex items-center justify-center mb-6 text-sm transition-colors hidden">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 mr-2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M19 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zM4 19.235v-.11a6.375 6.375 0 0112.75 0v.109A12.318 12.318 0 0110.374 21c-2.331 0-4.512-.645-6.374-1.766z" />
                         </svg>
@@ -239,7 +239,7 @@
 
             <div class="p-4 border-t border-minio-border space-y-2 shrink-0 pb-8 overflow-y-auto">
                 <button id="btnManageTeam" onclick="openTeamManager()"
-                    class="w-full text-left text-xs font-medium text-gray-400 hover:text-white flex items-center p-2 rounded hover:bg-minio-panel transition-colors">
+                    class="w-full text-left text-xs font-medium text-gray-400 hover:text-white flex items-center p-2 rounded hover:bg-minio-panel transition-colors hidden">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 mr-3">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
                     </svg>
@@ -290,14 +290,14 @@
                                 </button>
                                 
                                 <input type="file" id="fileUploadInput" class="hidden" multiple onchange="uploadFiles(event)">
-                                <button id="btnUpload" onclick="document.getElementById('fileUploadInput').click()" class="bg-white hover:bg-gray-200 text-gray-900 px-4 py-1.5 rounded text-xs font-bold transition-colors flex items-center shadow-sm">
+                                <button id="btnUpload" onclick="document.getElementById('fileUploadInput').click()" class="hidden bg-white hover:bg-gray-200 text-gray-900 px-4 py-1.5 rounded text-xs font-bold transition-colors items-center shadow-sm">
                                     Upload
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 ml-2">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
                                     </svg>
                                 </button>
 
-                                <button id="btnDeleteBucket" onclick="deleteCurrentBucket()" class="bg-transparent border border-red-900/40 text-red-500 hover:bg-red-900/20 px-3 py-1.5 rounded text-xs font-bold transition-colors flex items-center ml-2">
+                                <button id="btnDeleteBucket" onclick="deleteCurrentBucket()" class="hidden bg-transparent border border-red-900/40 text-red-500 hover:bg-red-900/20 px-3 py-1.5 rounded text-xs font-bold transition-colors items-center ml-2">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3.5 h-3.5 mr-1">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
                                     </svg>
@@ -331,7 +331,7 @@
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 mr-2 text-indigo-400 shrink-0">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
                             </svg>
-                            <span id="drawerFileName" class="truncate"></span>
+                            <span id="drawerFileName" class="truncate">filename.jpg</span>
                         </div>
                         <button onclick="closeDrawer()" class="text-gray-400 hover:text-white transition-colors">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
@@ -351,8 +351,13 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
                                 </svg>
                             </h3>
-                            <div id="objectInfoFields" class="space-y-4 text-xs">
-                                </div>
+                            <div class="space-y-4 text-xs">
+                                <div><span class="block text-gray-400 mb-1 font-medium">Name:</span><span class="text-gray-200 break-all" id="drawerName">...</span></div>
+                                <div><span class="block text-gray-400 mb-1 font-medium">Size:</span><span class="text-gray-200" id="drawerSize">...</span></div>
+                                <div><span class="block text-gray-400 mb-1 font-medium">Last Modified:</span><span class="text-gray-200" id="drawerDate">...</span></div>
+                                <div><span class="block text-gray-400 mb-1 font-medium">ETAG:</span><span class="text-gray-400 break-all font-mono text-[10px]" id="drawerEtag">...</span></div>
+                                <div><span class="block text-gray-400 mb-1 font-medium text-[10px] uppercase mt-4">Content-Type</span><span class="text-gray-200 break-all" id="drawerContentType">...</span></div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -366,34 +371,21 @@
     <script>
         let s3 = null;
         let activeBucket = '';
-        let userRole = 'employee'; 
-        let isAdminGlobal = false;
         let selectedObjectKey = '';
         let selectedFiles = new Set();
+        let isAdminGlobal = false;
 
-        const getToastIcon = (type) => {
-            if(type === 'loading') return `<svg class="animate-spin w-4 h-4 mr-3 text-indigo-400" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>`;
-            if(type === 'success') return `<svg class="w-4 h-4 mr-3 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
-            if(type === 'error') return `<svg class="w-4 h-4 mr-3 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
-            return `<svg class="w-4 h-4 mr-3 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>`;
-        };
-
-        function showToast(id, message, type = 'loading', autoDismiss = false) {
-            const container = document.getElementById('toastContainer');
-            const toast = document.createElement('div');
-            toast.id = id;
-            toast.className = 'bg-minio-sidebar border border-minio-border text-gray-300 px-5 py-3 rounded shadow-2xl text-xs font-bold min-w-[280px] transition-opacity duration-300 flex items-center';
-            toast.innerHTML = `${getToastIcon(type)} <span>${message}</span>`;
-            container.appendChild(toast);
-            if (autoDismiss) setTimeout(() => { toast.classList.add('opacity-0'); setTimeout(() => toast.remove(), 300); }, 4000);
+        function togglePassword() {
+            const input = document.getElementById('secretKey');
+            const eyeIcon = document.getElementById('eyeIcon');
+            if (input.type === 'password') {
+                input.type = 'text';
+                eyeIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"></path>`;
+            } else {
+                input.type = 'password';
+                eyeIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>`;
+            }
         }
-
-        function updateToast(id, message, autoDismiss = false, type = 'success') {
-            const toast = document.getElementById(id);
-            if (toast) { toast.innerHTML = `${getToastIcon(type)} <span>${message}</span>`; if (autoDismiss) setTimeout(() => { toast.classList.add('opacity-0'); setTimeout(() => toast.remove(), 300); }, 4000); }
-        }
-
-        function togglePassword() { const input = document.getElementById('secretKey'); input.type = input.type === 'password' ? 'text' : 'password'; }
 
         async function resolveEndpoint(url) {
             if (!url.includes(".workers.dev")) return url;
@@ -411,7 +403,7 @@
         }
 
         window.onload = async function () {
-            const urlParams = newSearchParams(window.location.search);
+            const urlParams = new URLSearchParams(window.location.search);
             const inviteToken = urlParams.get('invite');
             const gatewayURL = urlParams.get('gateway');
 
@@ -472,7 +464,7 @@
                     localStorage.setItem('bv_endpoint', gatewayURL);
                     localStorage.setItem('bv_access', data.access_key);
                     localStorage.setItem('bv_secret', data.secret_key);
-                    
+
                     showToast('login-toast', `Success! Welcome, ${employeeName}. You are securely logged in.`, 'success', true);
                     setTimeout(() => window.location.href = window.location.href.split('?')[0], 1500);
                 }
@@ -522,7 +514,6 @@
 
         function initAWS(endpoint, access, secret) {
             isAdminGlobal = access.startsWith('bv_admin_');
-            userRole = isAdminGlobal ? 'admin' : 'employee';
 
             AWS.config.update({
                 accessKeyId: access,
@@ -533,14 +524,23 @@
             });
             s3 = new AWS.S3();
 
-            // 🔒 DOM Hiding for Non-Admins
-            if (!isAdminGlobal) {
+            if (isAdminGlobal) {
+                document.getElementById('btnCreateBucket').classList.remove('hidden');
+                document.getElementById('btnCreateBucket').classList.add('flex');
+                document.getElementById('btnGenerateInvite').classList.remove('hidden');
+                document.getElementById('btnGenerateInvite').classList.add('flex');
+                document.getElementById('btnManageTeam').classList.remove('hidden');
+                document.getElementById('btnManageTeam').classList.add('flex');
+                document.getElementById('btnDeleteBucket').classList.remove('hidden');
+                document.getElementById('btnDeleteBucket').classList.add('flex');
+                document.getElementById('btnUpload').classList.remove('hidden');
+                document.getElementById('btnUpload').classList.add('flex');
+            } else {
                 document.getElementById('btnCreateBucket').style.display = 'none';
                 document.getElementById('btnGenerateInvite').style.display = 'none';
                 document.getElementById('btnManageTeam').style.display = 'none';
                 document.getElementById('btnDeleteBucket').style.display = 'none';
                 document.getElementById('btnUpload').style.display = 'none';
-                document.getElementById('fileUploadInput').style.display = 'none';
             }
 
             fetchBuckets(true);
@@ -557,19 +557,18 @@
                 } else {
                     document.getElementById('dashboardScreen').classList.remove('hidden');
                     const sortedBuckets = data.Buckets.sort((a, b) => new Date(b.CreationDate) - new Date(a.CreationDate));
+                    
                     const list = document.getElementById('bucketListSidebar');
                     list.innerHTML = '';
                     
-                    let loadedCount = 0;
-
+                    let visibleCount = 0;
                     sortedBuckets.forEach(b => {
                         if (isAdminGlobal) {
-                            renderSidebarBucket(b.Name, list, isInitialLoad, ++loadedCount);
+                            renderSidebarBucket(b.Name, list, isInitialLoad, ++visibleCount);
                         } else {
-                            // 🛡️ SECURE FILTER: Only render buckets the user is authorized to read
                             s3.listObjectsV2({ Bucket: b.Name, MaxKeys: 1 }, function(lErr) {
                                 if (!lErr) {
-                                    renderSidebarBucket(b.Name, list, isInitialLoad, ++loadedCount);
+                                    renderSidebarBucket(b.Name, list, isInitialLoad, ++visibleCount);
                                 }
                             });
                         }
@@ -578,16 +577,18 @@
             });
         }
         
-        function renderSidebarBucket(name, listElement, isInitialLoad, count) {
-            listElement.insertAdjacentHTML('beforeend', `
+        function renderSidebarBucket(name, list, isInitialLoad, count) {
+            list.innerHTML += `
                 <li data-bucket="${name.toLowerCase()}" class="bucket-item">
                     <button id="bucket-btn-${name}" onclick="loadObjects('${name}')" class="bucket-btn w-full text-left px-3 py-1.5 text-sm text-gray-400 hover:text-white hover:bg-minio-panel rounded transition-colors flex items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 mr-2 text-gray-500 shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" /></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 mr-2 text-gray-500"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" /></svg>
                         <span class="truncate">${name}</span>
                     </button>
                 </li>
-            `);
-            if (isInitialLoad && count === 1) loadObjects(name);
+            `;
+            if (isInitialLoad && count === 1) {
+                loadObjects(name);
+            }
         }
 
         function filterBuckets() {
@@ -615,24 +616,42 @@
         }
 
         // ==========================================
-        // CREATE BUCKET LOGIC
+        // UI ICONS AND VALIDATION
         // ==========================================
-        function openCreateBucketModal() {
-            document.getElementById('newBucketName').value = '';
+        const getToastIcon = (type) => {
+            if(type === 'loading') return `<svg class="animate-spin w-4 h-4 mr-3 text-indigo-400" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>`;
+            if(type === 'success') return `<svg class="w-4 h-4 mr-3 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>`;
+            if(type === 'error') return `<svg class="w-4 h-4 mr-3 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>`;
+            return `<svg class="w-4 h-4 mr-3 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>`;
+        };
+
+        function showToast(id, message, type = 'loading', autoDismiss = false) {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.id = id;
+            toast.className = 'bg-minio-sidebar border border-minio-border text-gray-300 px-5 py-3 rounded shadow-2xl text-xs font-bold min-w-[280px] transition-opacity duration-300 flex items-center';
+            toast.innerHTML = `${getToastIcon(type)} <span>${message}</span>`;
+            container.appendChild(toast);
             
-            const msg = document.getElementById('bucketValidationMsg');
-            msg.innerHTML = `<svg class="w-3.5 h-3.5 mr-1.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> <span>Bucket name should be at least 3 characters.</span>`;
-            msg.className = 'text-xs text-gray-500 mt-2 flex items-start';
-            
-            document.getElementById('confirmCreateBucketBtn').disabled = true;
-            document.getElementById('createBucketModal').classList.remove('hidden');
-            document.getElementById('createBucketModal').classList.add('flex');
-            setTimeout(() => document.getElementById('newBucketName').focus(), 100);
+            if (autoDismiss) {
+                setTimeout(() => {
+                    toast.classList.add('opacity-0');
+                    setTimeout(() => toast.remove(), 300);
+                }, 4000);
+            }
         }
 
-        function closeCreateBucketModal() {
-            document.getElementById('createBucketModal').classList.add('hidden');
-            document.getElementById('createBucketModal').classList.remove('flex');
+        function updateToast(id, message, autoDismiss = false, type = 'success') {
+            const toast = document.getElementById(id);
+            if (toast) {
+                toast.innerHTML = `${getToastIcon(type)} <span>${message}</span>`;
+                if (autoDismiss) {
+                    setTimeout(() => {
+                        toast.classList.add('opacity-0');
+                        setTimeout(() => toast.remove(), 300);
+                    }, 4000);
+                }
+            }
         }
 
         function validateBucketName() {
@@ -647,26 +666,37 @@
             const isValidFormat = /^[a-z0-9][a-z0-9.-]*[a-z0-9]$/.test(input) && !input.includes('..');
             
             if (input.length === 0) {
-                msg.innerHTML = `${infoIcon} <span>Enter a bucket name to continue.</span>`;
+                msg.innerHTML = `${infoIcon} Enter a bucket name to continue.`;
                 msg.className = "text-xs text-gray-500 mt-2 flex items-start";
                 btn.disabled = true;
             } else if (input.length < 3) {
-                msg.innerHTML = `${errorIcon} <span>Bucket name must be at least 3 characters.</span>`;
+                msg.innerHTML = `${errorIcon} Bucket name must be at least 3 characters.`;
                 msg.className = "text-xs text-red-400 mt-2 flex items-start";
                 btn.disabled = true;
             } else if (input.length > 63) {
-                msg.innerHTML = `${errorIcon} <span>Bucket name cannot exceed 63 characters.</span>`;
+                msg.innerHTML = `${errorIcon} Bucket name cannot exceed 63 characters.`;
                 msg.className = "text-xs text-red-400 mt-2 flex items-start";
                 btn.disabled = true;
             } else if (!isValidFormat) {
-                msg.innerHTML = `${errorIcon} <span>Use only lowercase letters, numbers, and non-consecutive hyphens.</span>`;
+                msg.innerHTML = `${errorIcon} Use only lowercase letters, numbers, and non-consecutive hyphens.`;
                 msg.className = "text-xs text-red-400 mt-2 flex items-start";
                 btn.disabled = true;
             } else {
-                msg.innerHTML = `${successIcon} <span>Bucket name is valid!</span>`;
+                msg.innerHTML = `${successIcon} Bucket name is valid!`;
                 msg.className = "text-xs text-green-400 mt-2 flex items-start";
                 btn.disabled = false;
             }
+        }
+
+        function openCreateBucketModal() { 
+            document.getElementById('newBucketName').value = ''; 
+            validateBucketName(); 
+            document.getElementById('createBucketModal').classList.replace('hidden', 'flex'); 
+            setTimeout(() => document.getElementById('newBucketName').focus(), 100); 
+        }
+
+        function closeCreateBucketModal() { 
+            document.getElementById('createBucketModal').classList.replace('flex', 'hidden'); 
         }
 
         function submitCreateBucket() {
@@ -690,7 +720,7 @@
         }
 
         // ==========================================
-        // INVITE MODAL LOGIC 
+        // INVITE MODAL LOGIC
         // ==========================================
         function incrementUses() { document.getElementById('inviteMaxUses').stepUp(); }
         function decrementUses() { document.getElementById('inviteMaxUses').stepDown(); }
@@ -719,13 +749,11 @@
             document.getElementById('invitePolicy').value = 'readwrite'; 
             document.getElementById('selectAllBuckets').checked = false;
             
-            document.getElementById('inviteModal').classList.remove('hidden');
-            document.getElementById('inviteModal').classList.add('flex'); 
+            document.getElementById('inviteModal').classList.replace('hidden', 'flex'); 
         }
 
         function closeInviteModal() { 
-            document.getElementById('inviteModal').classList.add('hidden');
-            document.getElementById('inviteModal').classList.remove('flex'); 
+            document.getElementById('inviteModal').classList.replace('flex', 'hidden'); 
         }
 
         function toggleAllInviteBuckets(mainCheckbox) {
@@ -883,7 +911,7 @@
                         Download ${selectedFiles.size} Files
                     </button>
                 `;
-                
+
                 if (isAdminGlobal) {
                     actionsHtml += `
                         <button onclick="deleteBulk()" class="w-full mt-3 px-4 py-3 text-xs text-red-500 border border-red-900/40 hover:bg-red-900/20 rounded-md font-bold transition-colors flex items-center justify-center">
@@ -939,7 +967,7 @@
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3.5 h-3.5 mr-3 text-gray-400"><path stroke-linecap="round" stroke-linejoin="round" d="M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 005.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 009.568 3z" /><path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6z" /></svg> Tags
                 </button>
             `;
-            
+
             if (isAdminGlobal) {
                 actionsHtml += `
                     </div>
@@ -960,7 +988,7 @@
                 <div><span class="block text-gray-400 mb-1 font-medium">ETAG:</span><span class="text-gray-400 break-all font-mono text-[10px]">${etag}</span></div>
                 <div><span class="block text-gray-400 mb-1 font-medium text-[10px] uppercase mt-4">Content-Type</span><span class="text-gray-200 break-all">${contentType}</span></div>
             `;
-            
+
             document.getElementById('drawerFileName').innerText = key;
             document.getElementById('objectDetailsDrawer').classList.remove('hidden');
         }
@@ -1210,17 +1238,6 @@
                 ResponseContentDisposition: `attachment; filename="${selectedObjectKey}"`
             });
             window.location.href = url;
-        }
-
-        function deleteSelected() {
-            if (!confirm(`Are you sure you want to permanently delete ${selectedObjectKey}?`)) return;
-            s3.deleteObject({ Bucket: activeBucket, Key: selectedObjectKey }, function (err, data) {
-                if (err) showToast('del-err', "Delete Failed: " + err.message, 'error', true);
-                else {
-                    closeDrawer();
-                    refreshCurrentBucket();
-                }
-            });
         }
 
         function showError(msg) {
